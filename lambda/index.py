@@ -1,15 +1,14 @@
 import json
-import os
 import urllib.request
 
-# モデルAPIのURL（環境変数から取得）
-MODEL_API_URL = os.environ.get("MODEL_API_URL")
+MODEL_API_URL = ""
 
 def lambda_handler(event, context):
     try:
         body = json.loads(event['body'])
-        prompt = body['message']
-        
+
+        prompt = body.get("prompt", "")
+
         request_payload = json.dumps({"prompt": prompt}).encode("utf-8")
         req = urllib.request.Request(
             MODEL_API_URL,
@@ -17,10 +16,11 @@ def lambda_handler(event, context):
             headers={"Content-Type": "application/json"},
             method="POST"
         )
-        
+
         with urllib.request.urlopen(req) as res:
             res_body = res.read()
         result = json.loads(res_body)
+
         assistant_response = result.get("response")
 
         return {
