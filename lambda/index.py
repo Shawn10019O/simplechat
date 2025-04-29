@@ -7,7 +7,7 @@ def lambda_handler(event, context):
     try:
         body = json.loads(event['body'])
 
-        prompt = body.get("prompt", "")
+        prompt = body.get("message", "")
 
         request_payload = json.dumps({"prompt": prompt}).encode("utf-8")
         req = urllib.request.Request(
@@ -21,7 +21,7 @@ def lambda_handler(event, context):
             res_body = res.read()
         result = json.loads(res_body)
 
-        assistant_response = result.get("response")
+        assistant_response = result.get("generated_text")
 
         return {
             "statusCode": 200,
